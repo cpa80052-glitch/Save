@@ -208,7 +208,7 @@ class ProgressManager:
             f"│ **__Speed:__** {speed_mbps:.2f} Mbps\n"
             f"│ **__ETA:__** {eta_min:.2f} min\n"
             f"╰──────────────────╯\n\n"
-            f"**__Powered by Team SPY__**"
+            f"**__Powered by ༺⚡༻ 𝑫𝒊𝒗𝒚𝒂𝒏𝒔𝒉 𝒔𝒉𝒖𝒌𝒍𝒂 ༺⚡༻ 🤭🤫__**"
         )
 
 class CaptionFormatter:
@@ -265,7 +265,7 @@ class FileOperations:
         """Process filename with user preferences"""
         delete_words = set(self.db.get_user_data(user_id, "delete_words", []))
         replacements = self.db.get_user_data(user_id, "replacement_words", {})
-        rename_tag = self.db.get_user_data(user_id, "rename_tag", "Team SPY")
+        rename_tag = self.db.get_user_data(user_id, "rename_tag", "༺⚡༻ 𝑫𝒊𝒗𝒚𝒂𝒏𝒔𝒉 𝒔𝒉𝒖𝒌𝒍𝒂 ༺⚡༻")
         
         path = Path(file_path)
         name = path.stem
@@ -595,7 +595,7 @@ class SmartTelegramBot:
             if free_check == 1:
                 # Free user - send with protection
                 reply_markup = InlineKeyboardMarkup([[
-                    InlineKeyboardButton("💎 Get Premium to Forward", url="https://t.me/kingofpatal")
+                    InlineKeyboardButton("💎 Get Premium to Forward", url="https://t.me/Divyanshshukla7")
                 ]])
                 await app.copy_message(target_chat_id, LOG_GROUP, result.id, protect_content=True, reply_markup=reply_markup)
             else:
@@ -713,7 +713,7 @@ class SmartTelegramBot:
                 msg_id = int(parts[-1]) + offset
             
             if chat_id in protected_channels:
-                await app.edit_message_text(sender, edit_id, "❌ This channel is protected by **Team SPY**.")
+                await app.edit_message_text(sender, edit_id, "❌ This channel is protected by **༺⚡༻ 𝑫𝒊𝒗𝒚𝒂𝒏𝒔𝒉 𝒔𝒉𝒖𝒌𝒍𝒂 ༺⚡༻ **.")
                 return None, None
                 
             return chat_id, msg_id
@@ -919,7 +919,7 @@ class SmartTelegramBot:
             [Button.inline("Set Thumbnail", b'setthumb'), Button.inline("Remove Thumbnail", b'remthumb')],
             [Button.inline("PDF Watermark", b'pdfwt'), Button.inline("Video Watermark", b'watermark')],
             [Button.inline("Upload Method", b'uploadmethod')],
-            [Button.url("Report Issues", "https://t.me/team_spy_pro")]
+            [Button.url("Report Issues", "https://t.me/+5H5tJB8hlJo2MjU1")]
         ]
         
         message = (
