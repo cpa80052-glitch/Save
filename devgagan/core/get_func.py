@@ -813,49 +813,65 @@ class SmartTelegramBot:
         
         try:
             # Try direct copy first
-            msg = await app_client.get_messages(chat_id, message_id)
-            custom_caption = self.user_caption_prefs.get(str(sender), "")
-            final_caption = await self._format_caption_with_custom(msg.caption or '', sender, custom_caption)
+msg = await app_client.get_messages(chat_id, message_id)
+custom_caption = self.user_caption_prefs.get(str(sender), "")
+final_caption = await self._format_caption_with_custom(msg.caption or '', sender, custom_caption)
 
-            if msg.media and not msg.document and not msg.video:
-                # For photos and other simple media
-                if msg.photo:
-                    result = await app_client.send_photo(target_chat_id, msg.photo.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                elif msg.video:
-                    result = await app_client.send_video(target_chat_id, msg.video.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                elif msg.document:
-                    result = await app_client.send_document(target_chat_id, msg.document.file_id, caption=final_caption, reply_to_message_id=topic_id)
-                
-                if 'result' in locals():
-                    await result.copy(LOG_GROUP)
-                    await app.delete_messages(sender, edit_id)
-                    return
+if msg.media:
+    if msg.photo:
+        # For photos
+        result = await app_client.send_photo(target_chat_id, msg.photo.file_id, caption=final_caption, reply_to_message_id=topic_id)
+    elif msg.video:
+        # For videos
+        result = await app_client.send_video(target_chat_id, msg.video.file_id, caption=final_caption, reply_to_message_id=topic_id)
+    elif msg.document:
+        # For documents
+        result = await app_client.send_document(target_chat_id, msg.document.file_id, caption=final_caption, reply_to_message_id=topic_id)
+    
+    if 'result' in locals():
+        await result.copy(LOG_GROUP)
+        await app.delete_messages(sender, edit_id)
+        return
 
-            elif msg.text:
-                result = await app_client.copy_message(target_chat_id, chat_id, message_id, reply_to_message_id=topic_id)
-                await result.copy(LOG_GROUP)
-                await app.delete_messages(sender, edit_id)
-                return
+elif msg.text:
+    # For text messages
+    result = await app_client.copy_message(target_chat_id, chat_id, message_id, reply_to_message_id=topic_id)
+    await result.copy(LOG_GROUP)
+    await app.delete_messages(sender, edit_id)
+    return
 
-            # If direct copy failed, try with userbot
-            if userbot:
-                edit_msg = await app.edit_message_text(sender, edit_id, "🔄 Trying alternative method...")
-                try:
-                    await userbot.join_chat(chat_id)
-                except:
-                    pass
-                
-                chat_id = (await userbot.get_chat(f"@{chat_id}")).id
-                msg = await userbot.get_messages(chat_id, message_id)
+# If direct copy failed, try with userbot
+if userbot:
+    edit_msg = await app.edit_message_text(sender, edit_id, "🔄 Trying alternative method...")
+    try:
+        await userbot.join_chat(chat_id)
+    except:
+        pass
+    
+    chat_id = (await userbot.get_chat(f"@{chat_id}")).id
+    msg = await userbot.get_messages(chat_id, message_id)
 
-                if not msg or msg.service or msg.empty:
-                    await edit_msg.edit("❌ Message not found or inaccessible")
-                    return
+    if not msg or msg.service or msg.empty:
+        await edit_msg.edit("❌ Message not found or inaccessible")
+        return
 
-                if msg.text:
-                    await app_client.send_message(target_chat_id, msg.text.markdown, reply_to_message_id=topic_id)
-                    await edit_msg.delete()
-                    return
+    if msg.text:
+        await app_client.send_message(target_chat_id, msg.text.markdown, reply_to_message_id=topic_id)
+        await edit_msg.delete()
+        return
+    elif msg.media:
+        if msg.photo:
+            result = await app_client.send_photo(target_chat_id, msg.photo.file_id, caption=final_caption, reply_to_message_id=topic_id)
+        elif msg.video:
+            result = await app_client.send_video(target_chat_id, msg.video.file_id, caption=final_caption, reply_to_message_id=topic_id)
+        elif msg.document:
+            result = await app_client.send_document(target_chat_id, msg.document.file_id, caption=final_caption, reply_to_message_id=topic_id)
+        
+        if 'result' in locals():
+            await result.copy(LOG_GROUP)
+            await edit_msg.delete()
+            return
+
 
                 # Download and upload media
                 final_caption = await self._format_caption_with_custom(msg.caption.markdown if msg.caption else "", sender, custom_caption)
