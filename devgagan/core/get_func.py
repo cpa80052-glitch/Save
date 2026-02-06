@@ -731,16 +731,16 @@ class SmartTelegramBot:
             await self._download_user_stories(gf, chat, msg_id, sender, edit_id)
             return None, None
         
-       else:
-         # Handle public links
-          await app.edit_message_text(sender, edit_id, "🔗 Public link detected...")
-          chat = msg_link.split("t.me/")[1].split("/")[0]
-           msg_id = int(msg_link.split("/")[-1])
+            else:
+            # Handle public links
+            await app.edit_message_text(sender, edit_id, "🔗 Public link detected...")
+            chat = msg_link.split("t.me/")[1].split("/")[0]
+            msg_id = int(msg_link.split("/")[-1])
 
-          # IMPORTANT: wait for full copy/download to finish
-           await self._copy_public_message(app, gf, sender, chat, msg_id, edit_id)
+            # IMPORTANT: wait for full copy/download to finish
+            await self._copy_public_message(app, gf, sender, chat, msg_id, edit_id)
 
-           # ❌ DO NOT return here (flow must continue)
+            # ❌ DO NOT return here (flow must continue)
             return chat, msg_id
 
     async def _handle_special_messages(self, msg, target_chat_id: int, topic_id: Optional[int], edit_id: int, sender: int) -> bool:
