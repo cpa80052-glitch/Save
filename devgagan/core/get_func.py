@@ -720,18 +720,18 @@ class SmartTelegramBot:
         
         elif '/s/' in msg_link:
             # Handle story links
-            await app.edit_message_text(sender, edit_id, "📖 Story Link Detected...")
-            if not gf:
-                await app.edit_message_text(sender, edit_id, "❌ Login required to save stories...")
-                return None, None
-            
-            parts = msg_link.split("/")
-            chat = f"-100{parts[3]}" if parts[3].isdigit() else parts[3]
-            msg_id = int(parts[-1])
-            await self._download_user_stories(gf, chat, msg_id, sender, edit_id)
+        await app.edit_message_text(sender, edit_id, "📖 Story Link Detected...")
+        if not gf:
+            await app.edit_message_text(sender, edit_id, "❌ Login required to save stories...")
             return None, None
         
-            else:
+        parts = msg_link.split("/")
+        chat = f"-100{parts[3]}" if parts[3].isdigit() else parts[3]
+        msg_id = int(parts[-1])
+        await self._download_user_stories(gf, chat, msg_id, sender, edit_id)
+        return None, None
+        
+        else:
             # Handle public links
             await app.edit_message_text(sender, edit_id, "🔗 Public link detected...")
             chat = msg_link.split("t.me/")[1].split("/")[0]
